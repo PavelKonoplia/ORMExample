@@ -1,0 +1,7 @@
+G:\Repoes\ORMExample\ORMExample\bin\Debug\ORMExample.exe.config
+G:\Repoes\ORMExample\ORMExample\bin\Debug\ORMExample.exe
+G:\Repoes\ORMExample\ORMExample\bin\Debug\ORMExample.pdb
+G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.csprojResolveAssemblyReference.cache
+G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.csproj.CoreCompileInputs.cache
+G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.exe
+G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.pdb
