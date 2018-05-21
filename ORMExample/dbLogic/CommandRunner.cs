@@ -29,32 +29,25 @@ namespace ORMExample
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlExpression, connection);
+                DataSet ds = new DataSet();
+                adapter.Fill(ds);
 
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-
-                SqlDataReader reader = command.ExecuteReader();
-
-                if (reader.HasRows)
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
-                    DataTable dataTable = reader.GetSchemaTable();
-                    while (reader.Read())
+                    object instance = Activator.CreateInstance(typeT);
+                    for (int j = 0; j < ds.Tables[0].Rows[j].ItemArray.Length; j++)
                     {
-                        object instance = Activator.CreateInstance(typeT);
-
-                        for (int i = 0; i < dataTable.Rows.Count; i++)
-                        {
-                            PropertyInfo prop = typeT.GetProperty(dataTable.Rows[i].ItemArray[9].ToString());
-                            prop.SetValue(instance, reader.GetValue(i), null);
-                        }
-                        items.Add((T)instance);
+                        PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
+                        prop.SetValue(instance, ds.Tables[0].Rows[i].ItemArray[j], null);
                     }
+                    items.Add((T)instance);
                 }
-                reader.Close();
+                adapter.Dispose();
+                ds.Dispose();
             }
 
-            Console.WriteLine(sqlExpression);
-            Console.WriteLine();
-
+            Console.WriteLine(sqlExpression+"\n");
             foreach (T item in items)
             {
                 Console.WriteLine(item.ToString());
@@ -76,7 +69,7 @@ namespace ORMExample
             {
                 if (propsInfo[i].Name.ToString().ToLower().Contains(lowerTypeName + "id"))
                 {
-                    condition += propsInfo[i].Name + "="+  Id;
+                    condition += propsInfo[i].Name + "=" + Id;
                     break;
                 }
             }
@@ -88,33 +81,23 @@ namespace ORMExample
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand(sqlExpression, connection);
-                SqlDataReader reader = command.ExecuteReader();
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlExpression, connection);
+                DataSet ds = new DataSet();
+                adapter.Fill(ds);
 
-                if (reader.HasRows)
+                object instance = Activator.CreateInstance(typeT);
+                for (int j = 0; j < ds.Tables[0].Rows[0].ItemArray.Length; j++)
                 {
-                    DataTable dataTable = reader.GetSchemaTable();
-                    while (reader.Read())
-                    {
-                        object instance = Activator.CreateInstance(typeT);
-
-                        for (int i = 0; i < dataTable.Rows.Count; i++)
-                        {
-                            PropertyInfo prop = typeT.GetProperty(dataTable.Rows[i].ItemArray[9].ToString());
-                            prop.SetValue(instance, reader.GetValue(i), null);
-                        }
-                        item = (T)instance;
-                    }
+                    PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
+                    prop.SetValue(instance, ds.Tables[0].Rows[0].ItemArray[j], null);
                 }
-                reader.Close();
+                item = (T)instance;
+
+                adapter.Dispose();
+                ds.Dispose();
             }
 
-            Console.WriteLine(sqlExpression);
-            Console.WriteLine();
-            Console.WriteLine(item.ToString());
-            Console.WriteLine();
-            Console.ReadKey();
-
+            ShowResult(sqlExpression, item.ToString());
             return item;
         }
 
@@ -130,7 +113,7 @@ namespace ORMExample
                 tempProp = propsInfo[i].PropertyType.ToString().Contains("String")
                     ? "\'" + GetPropValue(item, propsInfo[i].Name) + "\'"
                     : GetPropValue(item, propsInfo[i].Name).ToString();
-                props += i == propsInfo.Length - 1 ? tempProp  : tempProp + ",";
+                props += i == propsInfo.Length - 1 ? tempProp : tempProp + ",";
             }
             string sqlExpression = $"SET IDENTITY_INSERT {tableName} ON \n INSERT INTO {tableName} ({columns}) VALUES ({props}) \n SET IDENTITY_INSERT {tableName} OFF";
 
@@ -141,19 +124,13 @@ namespace ORMExample
                 try
                 {
                     command.ExecuteNonQuery();
-                    Console.WriteLine(sqlExpression);
-                    Console.WriteLine();
-                    Console.WriteLine(item.ToString());
-                    Console.WriteLine();
+                    ShowResult(sqlExpression, item.ToString());
                 }
                 catch (Exception)
                 {
                     Console.WriteLine($"Item with same Id already exist \n");
                 }
-                
             }            
-
-            Console.ReadKey();
         }
 
         public void Update(T item)
@@ -184,11 +161,7 @@ namespace ORMExample
                 command.ExecuteNonQuery();
             }
 
-            Console.WriteLine(sqlExpression);
-            Console.WriteLine();
-            Console.WriteLine(item.ToString());
-            Console.WriteLine();
-            Console.ReadKey();
+            ShowResult(sqlExpression, item.ToString());
         }
 
         public void Delete(int id)
@@ -215,16 +188,22 @@ namespace ORMExample
                 command.ExecuteNonQuery();
             }
 
-            Console.WriteLine(sqlExpression);
-            Console.WriteLine();
-            Console.WriteLine("Deleted item with id = {0}", id);
-            Console.WriteLine();
-            Console.ReadKey();
+            ShowResult(sqlExpression, $"Deleted item with id = {id}");
         }
 
         public static object GetPropValue(object src, string propName)
         {
             return src.GetType().GetProperty(propName).GetValue(src, null);
+        }
+
+
+        public void ShowResult(string sql,string res)
+        {
+            Console.WriteLine(sql);
+            Console.WriteLine();
+            Console.WriteLine(res);
+            Console.WriteLine();
+            Console.ReadKey();
         }
     }
 }

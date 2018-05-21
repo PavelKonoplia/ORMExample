@@ -12,13 +12,12 @@ namespace ORMExample
     {
         static void Main(string[] args)
         {
-            Tester.Test2();
-            //TestUser();
+            TestUser();
         }
 
         public static void TestUser()
         {
-            User user = new User(13, "Tester13", 13);
+            User user = new User(33, "Mate", 31);
             User user2 = new User(13, "Rom", 22);
             UserContext userContext = new UserContext();
             userContext.GetItemsList();
