@@ -1,5 +1,4 @@
-﻿using ORMExample.dbLogic;
-using ORMExample.Models;
+﻿using ORMExample.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ORMExample
+namespace ORMExample.dbLogic
 {
-    public class UserContext
+    public class ProductContext
     {
         private static string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        public Repository<User> UsersContext = new Repository<User>(connectionString);
+        public Repository<Product> ProductsContext = new Repository<Product>(connectionString);
     }
 }

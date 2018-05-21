@@ -8,15 +8,23 @@ namespace ORMExample.Models
 {
     public class Product
     {
-        public int ProductID { get; }
+        public int ProductID { get; set; }
         public string Name { get; set; }
-        public double Cost { get; set; }
+        public int Price { get; set; }
+        public Product()
+        {
+        }
 
-        public Product(int id, string name, double cost)
+        public Product(int id, string name, int price)
         {
             ProductID = id;
             Name = name;
-            Cost = cost;
+            Price = price;
+        }
+
+        public override string ToString()
+        {
+            return "ProductID: " + ProductID + " Name: " + Name + " Price " + Price;
         }
     }
 }

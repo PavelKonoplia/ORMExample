@@ -36,7 +36,7 @@ namespace ORMExample
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
                     object instance = Activator.CreateInstance(typeT);
-                    for (int j = 0; j < ds.Tables[0].Rows[j].ItemArray.Length; j++)
+                    for (int j = 0; j < ds.Tables[0].Rows[i].ItemArray.Length; j++)
                     {
                         PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
                         prop.SetValue(instance, ds.Tables[0].Rows[i].ItemArray[j], null);
@@ -80,11 +80,10 @@ namespace ORMExample
                 connection.Open();
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlExpression, connection);
                 DataSet ds = new DataSet();
-                adapter.Fill(ds);
-
-                object instance = Activator.CreateInstance(typeT);
                 try
                 {
+                    adapter.Fill(ds);
+                    object instance = Activator.CreateInstance(typeT);
                     for (int j = 0; j < ds.Tables[0].Rows[0].ItemArray.Length; j++)
                     {
                         PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
