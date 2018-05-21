@@ -63,10 +63,24 @@ namespace ORMExample
             return items;
         }
 
-        public T GetItem(int UserId)
+        public T GetItem(int Id)
         {
-            string tableName = "[dbo].[" + typeT.Name + "] ";
-            string sqlExpression = "SELECT * FROM " + tableName + " WHERE UserId=" + UserId;
+            string tableName = "[dbo].[" + typeT.Name + "] ", condition = "";
+            string lowerTypeName = typeT.Name.ToLower();
+
+            PropertyInfo[] propsInfo = typeT.GetProperties();
+
+            for (int i = 0; i < propsInfo.Length; i++)
+            {
+                if (propsInfo[i].Name.ToString().ToLower().Contains(lowerTypeName + "id"))
+                {
+                    condition += propsInfo[i].Name + "="+  Id;
+                    break;
+                }
+            }
+
+            string sqlExpression = "SELECT * FROM " + tableName + " WHERE "+ condition;
+
             T item = new T();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
