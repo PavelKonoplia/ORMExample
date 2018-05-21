@@ -60,9 +60,7 @@ namespace ORMExample
 
         public T GetItem(int Id)
         {
-            string condition = "";
-            string lowerTypeName = typeT.Name.ToLower();
-
+            string lowerTypeName = typeT.Name.ToLower(), condition = "";
             PropertyInfo[] propsInfo = typeT.GetProperties();
 
             for (int i = 0; i < propsInfo.Length; i++)
@@ -75,7 +73,6 @@ namespace ORMExample
             }
 
             string sqlExpression = $"SELECT * FROM { tableName } WHERE {condition}";
-
             T item = new T();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -86,18 +83,23 @@ namespace ORMExample
                 adapter.Fill(ds);
 
                 object instance = Activator.CreateInstance(typeT);
-                for (int j = 0; j < ds.Tables[0].Rows[0].ItemArray.Length; j++)
+                try
                 {
-                    PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
-                    prop.SetValue(instance, ds.Tables[0].Rows[0].ItemArray[j], null);
+                    for (int j = 0; j < ds.Tables[0].Rows[0].ItemArray.Length; j++)
+                    {
+                        PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
+                        prop.SetValue(instance, ds.Tables[0].Rows[0].ItemArray[j], null);
+                    }
+                    item = (T)instance;
+                    ShowResult(sqlExpression, item.ToString());
                 }
-                item = (T)instance;
-
+                catch (Exception)
+                {
+                    Console.WriteLine("Item with this id was not found! \n");                   
+                }              
                 adapter.Dispose();
                 ds.Dispose();
             }
-
-            ShowResult(sqlExpression, item.ToString());
             return item;
         }
 
@@ -128,7 +130,7 @@ namespace ORMExample
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine($"Item with same Id already exist \n");
+                    Console.WriteLine("Error when creating Item, check your model. \n");
                 }
             }            
         }
@@ -158,10 +160,17 @@ namespace ORMExample
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-            }
 
-            ShowResult(sqlExpression, item.ToString());
+                try
+                {
+                    command.ExecuteNonQuery();
+                    ShowResult(sqlExpression, item.ToString());
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Error on updating Item, check your model. \n");
+                }
+            }
         }
 
         public void Delete(int id)
@@ -178,7 +187,6 @@ namespace ORMExample
                     break;
                 }
             }
-
             string sqlExpression = $"DELETE FROM {tableName} WHERE {condition}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -195,7 +203,6 @@ namespace ORMExample
         {
             return src.GetType().GetProperty(propName).GetValue(src, null);
         }
-
 
         public void ShowResult(string sql,string res)
         {

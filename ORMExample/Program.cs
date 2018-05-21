@@ -21,7 +21,7 @@ namespace ORMExample
             User user2 = new User(13, "Rom", 22);
             UserContext userContext = new UserContext();
             userContext.GetItemsList();
-            userContext.GetItem(2);
+            userContext.GetItem(112);
             userContext.Create(user);
             userContext.Update(user2);
             userContext.Delete(6);
