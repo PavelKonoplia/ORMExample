@@ -121,30 +121,38 @@ namespace ORMExample
         public void Create(T item)
         {
             string lowerTypeName = typeT.Name.ToLower();
-            string columns = "(", props = "(", tempProp;
+            string columns = "", props = "", tempProp;
             PropertyInfo[] propsInfo = typeT.GetProperties();
 
             for (int i = 0; i < propsInfo.Length; i++)
             {
-                columns += i == propsInfo.Length - 1 ? propsInfo[i].Name + ")" : propsInfo[i].Name + ",";
+                columns += i == propsInfo.Length - 1 ? propsInfo[i].Name : propsInfo[i].Name + ",";
                 tempProp = propsInfo[i].PropertyType.ToString().Contains("String")
                     ? "\'" + GetPropValue(item, propsInfo[i].Name) + "\'"
                     : GetPropValue(item, propsInfo[i].Name).ToString();
-                props += i == propsInfo.Length - 1 ? tempProp + ")" : tempProp + ",";
+                props += i == propsInfo.Length - 1 ? tempProp  : tempProp + ",";
             }
-            string sqlExpression = $"SET IDENTITY_INSERT {tableName} ON \n INSERT INTO {tableName} {columns} VALUES {props} \n SET IDENTITY_INSERT {tableName} OFF";
+            string sqlExpression = $"SET IDENTITY_INSERT {tableName} ON \n INSERT INTO {tableName} ({columns}) VALUES ({props}) \n SET IDENTITY_INSERT {tableName} OFF";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
-                command.ExecuteNonQuery();
-            }
+                try
+                {
+                    command.ExecuteNonQuery();
+                    Console.WriteLine(sqlExpression);
+                    Console.WriteLine();
+                    Console.WriteLine(item.ToString());
+                    Console.WriteLine();
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Item with same Id already exist \n");
+                }
+                
+            }            
 
-            Console.WriteLine(sqlExpression);
-            Console.WriteLine();
-            Console.WriteLine(item.ToString());
-            Console.WriteLine();
             Console.ReadKey();
         }
 

@@ -29,9 +29,9 @@ namespace ORMExample
                     {
                         for (int i = 0; i < dataTable.Rows.Count; i++)
                         {
-                            Console.WriteLine(dataTable.Rows[i].ItemArray[9] +"="+ reader.GetValue(i));
+                            Console.WriteLine(dataTable.Rows[i].ItemArray[9] + "=" + reader.GetValue(i));
                         }
-                    }                    
+                    }
                 }
                 reader.Close();
             }
@@ -52,12 +52,21 @@ namespace ORMExample
                 // Заполняем Dataset
                 adapter.Fill(ds);
                 // Отображаем данные
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                for (int i = -1; i < ds.Tables[0].Rows.Count; i++)
                 {
                     for (int j = 0; j < ds.Tables[0].Rows[j].ItemArray.Length; j++)
                     {
-                        Console.WriteLine(ds.Tables[0].Rows[i].ItemArray[j]);
+                        if (i == -1)
+                        {
+                            Console.Write($"{ds.Tables[0].Columns[j]} ");
+                        }
+                        else
+                        {
+                            Console.Write($"{ds.Tables[0].Rows[i].ItemArray[j]} ");
+                        }
+
                     }
+                    Console.WriteLine();
                 }
             }
             Console.ReadKey();
