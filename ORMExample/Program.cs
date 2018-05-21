@@ -17,8 +17,8 @@ namespace ORMExample
 
         public static void TestUser()
         {
-            User user = new User(22, "Steve22", 14);
-            User user2 = new User(22, "McDonald", 34);
+            User user = new User(23, "Steve42", 14);
+            User user2 = new User(23, "McDonald2112", 34);
             UserContext userContext = new UserContext();
             userContext.GetItemsList();
             userContext.GetItem(2);

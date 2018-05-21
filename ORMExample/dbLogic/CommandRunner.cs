@@ -13,7 +13,7 @@ namespace ORMExample
     public class CommandRunner<T> where T : class, new()
     {
         private static Type typeT = typeof(T);
-        private string tableName = "[dbo].[" + typeT.Name + "] ";
+        private string tableName = $"[dbo].[{typeT.Name}] ";
         private string _connectionString;
 
         public CommandRunner(string connectionString)
@@ -23,13 +23,15 @@ namespace ORMExample
 
         public IEnumerable<T> GetItemList()
         {
-            string sqlExpression = "SELECT * FROM " + tableName;
+            string sqlExpression = $"SELECT * FROM {tableName}";
             Collection<T> items = new Collection<T>();
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
+
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
+
                 SqlDataReader reader = command.ExecuteReader();
 
                 if (reader.HasRows)
@@ -65,7 +67,7 @@ namespace ORMExample
 
         public T GetItem(int Id)
         {
-            string tableName = "[dbo].[" + typeT.Name + "] ", condition = "";
+            string condition = "";
             string lowerTypeName = typeT.Name.ToLower();
 
             PropertyInfo[] propsInfo = typeT.GetProperties();
@@ -79,7 +81,7 @@ namespace ORMExample
                 }
             }
 
-            string sqlExpression = "SELECT * FROM " + tableName + " WHERE "+ condition;
+            string sqlExpression = $"SELECT * FROM { tableName } WHERE {condition}";
 
             T item = new T();
 
@@ -118,7 +120,7 @@ namespace ORMExample
 
         public void Create(T item)
         {
-            string tableName = "[dbo].[" + typeT.Name + "] ", lowerTypeName = typeT.Name.ToLower();
+            string lowerTypeName = typeT.Name.ToLower();
             string columns = "(", props = "(", tempProp;
             PropertyInfo[] propsInfo = typeT.GetProperties();
 
@@ -130,7 +132,7 @@ namespace ORMExample
                     : GetPropValue(item, propsInfo[i].Name).ToString();
                 props += i == propsInfo.Length - 1 ? tempProp + ")" : tempProp + ",";
             }
-            string sqlExpression = "SET IDENTITY_INSERT"+ tableName+ "ON \n"+ "INSERT INTO " + tableName + columns + " VALUES " + props + "\n SET IDENTITY_INSERT" + tableName + "OFF";
+            string sqlExpression = $"SET IDENTITY_INSERT {tableName} ON \n INSERT INTO {tableName} {columns} VALUES {props} \n SET IDENTITY_INSERT {tableName} OFF";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -148,7 +150,7 @@ namespace ORMExample
 
         public void Update(T item)
         {
-            string tableName = "[dbo].[" + typeT.Name + "] ", lowerTypeName = typeT.Name.ToLower();
+            string lowerTypeName = typeT.Name.ToLower();
             string props = "", condition = "", tempProp;
             PropertyInfo[] propsInfo = typeT.GetProperties();
 
@@ -165,7 +167,7 @@ namespace ORMExample
                 props += i == propsInfo.Length - 1 ? propsInfo[i].Name + "=" + tempProp : propsInfo[i].Name + "=" + tempProp + ",";
             }
 
-            string sqlExpression = "UPDATE " + tableName + " SET " + props + " WHERE " + condition;
+            string sqlExpression = $"UPDATE {tableName} SET {props} WHERE {condition}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
@@ -183,7 +185,7 @@ namespace ORMExample
 
         public void Delete(int id)
         {
-            string tableName = "[dbo].[" + typeT.Name + "] ", lowerTypeName = typeT.Name.ToLower();
+            string lowerTypeName = typeT.Name.ToLower();
             string condition = "";
             PropertyInfo[] propsInfo = typeT.GetProperties();
 
@@ -196,7 +198,7 @@ namespace ORMExample
                 }
             }
 
-            string sqlExpression = "DELETE FROM " + tableName + " WHERE " + condition;
+            string sqlExpression = $"DELETE FROM {tableName} WHERE {condition}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
