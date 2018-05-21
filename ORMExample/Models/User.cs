@@ -21,5 +21,10 @@ namespace ORMExample.Models
             Name = name;
             Age = age;
         }
+
+        public override string ToString()
+        {
+            return "UserID: "+UserID + " Name: " + Name + " Age " + Age;
+        }
     }
 }

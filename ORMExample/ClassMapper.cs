@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ORMExample.Models;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,55 +14,134 @@ namespace ORMExample
     {
         private Type typeT = typeof(T);
 
-        public void GetAll(string connectionString, string sqlExpression)
+        public void GetItemList(string connectionString, string sqlExpression)
         {
             Collection<T> items = new Collection<T>();
-            
+
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(sqlExpression, connection);
                 SqlDataReader reader = command.ExecuteReader();
 
-                if (reader.HasRows) 
+                if (reader.HasRows)
                 {
                     DataTable dataTable = reader.GetSchemaTable();
                     while (reader.Read())
                     {
                         object instance = Activator.CreateInstance(typeT);
-                        
+
                         for (int i = 0; i < dataTable.Rows.Count; i++)
                         {
                             PropertyInfo prop = typeT.GetProperty(dataTable.Rows[i].ItemArray[9].ToString());
-                           // Console.WriteLine(prop.Name);
-                           // Console.WriteLine(reader.GetValue(i));
                             prop.SetValue(instance, reader.GetValue(i), null);
-
-                            Console.WriteLine(prop);
                         }
                         items.Add((T)instance);
                     }
                 }
-
                 reader.Close();
             }
-            Console.WriteLine(items.Count);
+            foreach (var item in items)
+            {
+                Console.WriteLine(item.ToString());
+            }
+            Console.ReadKey();
         }
-        /*
-        public T MapToAdd(N n) {
-            Type typeT = typeof(T);
-            Type typeN = typeof(N);
-            // create an instance of that type
-            object instance = Activator.CreateInstance(typeT);
-            // Get a property on the type that is stored in the 
-            // property string
-            PropertyInfo prop = type.GetProperty(property);
-            // Set the value of the given property on the given instance
-            prop.SetValue(instance, value, null);
-            // at this stage instance.Bar will equal to the value
+
+        public void GetItem(string connectionString, string sqlExpression)
+        {
+            T item = new T();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sqlExpression, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    DataTable dataTable = reader.GetSchemaTable();
+                    while (reader.Read())
+                    {
+                        object instance = Activator.CreateInstance(typeT);
+
+                        for (int i = 0; i < dataTable.Rows.Count; i++)
+                        {
+                            PropertyInfo prop = typeT.GetProperty(dataTable.Rows[i].ItemArray[9].ToString());
+                            prop.SetValue(instance, reader.GetValue(i), null);
+                        }
+                        item = (T)instance;
+                    }
+                }
+                reader.Close();
+            }
+            Console.WriteLine(item.ToString());
 
 
-            return t;
-        }*/
+            Console.ReadKey();
+        }
+
+
+        public void Create(string connectionString, T item)
+        {
+            string tableName = "[dbo].[" + typeT.Name + "] ";
+            Type type = item.GetType();
+            string columns = "(", props = "(", tempProp;
+            int propsCount = type.GetProperties().Length;
+            PropertyInfo[] propsInfo = type.GetProperties();
+            for (int i = 0; i < propsCount; i++)
+            {
+                if (propsInfo[i].Name.ToString().Contains("ID"))
+                {
+                    continue;
+                }
+                columns += i == propsCount - 1 ? propsInfo[i].Name + ")" : propsInfo[i].Name + ",";
+                tempProp = propsInfo[i].PropertyType.ToString().Contains("String") ? "\'" + GetPropValue(item, type.GetProperties()[i].Name) + "\'" : GetPropValue(item, type.GetProperties()[i].Name).ToString();
+                props += i == propsCount - 1 ? tempProp + ")" : tempProp + ",";
+            }
+            string sqlExpression2 = "INSERT INTO " + tableName + columns + " VALUES " + props;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sqlExpression2, connection);
+                command.ExecuteNonQuery();
+            }
+            Console.ReadKey();
+        }
+
+        //TODO
+        public void Update(string connectionString, T item)
+        {
+            string tableName = "[dbo].[" + typeT.Name + "] ";
+            Type type = item.GetType();
+            string columns = "(", props = "(", tempProp;
+            int propsCount = type.GetProperties().Length;
+            PropertyInfo[] propsInfo = type.GetProperties();
+            for (int i = 0; i < propsCount; i++)
+            {
+                if (propsInfo[i].Name.ToString().Contains("ID"))
+                {
+                    continue;
+                }
+                columns += i == propsCount - 1 ? propsInfo[i].Name + ")" : propsInfo[i].Name + ",";
+                tempProp = propsInfo[i].PropertyType.ToString().Contains("String") ? "\'" + GetPropValue(item, type.GetProperties()[i].Name) + "\'" : GetPropValue(item, type.GetProperties()[i].Name).ToString();
+                props += i == propsCount - 1 ? tempProp + ")" : tempProp + ",";
+            }
+            string sqlExpression2 = "INSERT INTO " + tableName + columns + " VALUES " + props;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(sqlExpression2, connection);
+                command.ExecuteNonQuery();
+            }
+            Console.ReadKey();
+        }
+
+        public static object GetPropValue(object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).GetValue(src, null);
+        }
     }
 }
