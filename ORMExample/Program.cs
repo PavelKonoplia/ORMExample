@@ -12,25 +12,20 @@ namespace ORMExample
     {
         static void Main(string[] args)
         {
-            //Tester.Test();
-
-            // Tester.Test2();
             TestUser();
         }
 
         public static void TestUser()
         {
-            string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            string sqlExpression = "SELECT * FROM [dbo].[User]";
-            int UserId = 2;
-            string sqlExpression2 = "SELECT * FROM [dbo].[User] WHERE UserId="+UserId;
-
-            User u = new User(13, "Jacky", 44);
-            ClassMapper<User> classMapper = new ClassMapper<User>();
-            // classMapper.GetItemList(connectionString, sqlExpression);
-            //classMapper.GetItem(connectionString, sqlExpression2);
-            classMapper.Create(connectionString, u);
-
+            User user = new User(22, "Steve22", 14);
+            User user2 = new User(22, "McDonald", 34);
+            UserContext userContext = new UserContext();
+            userContext.GetItemsList();
+            userContext.GetItem(2);
+            userContext.Create(user);
+            userContext.Update(user2);
+            userContext.Delete(6);
+            userContext.GetItemsList();
         }
     }
 }

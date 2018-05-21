@@ -44,14 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClassMapper.cs" />
-    <Compile Include="Collection.cs" />
-    <Compile Include="IRepository.cs" />
+    <Compile Include="dbLogic\CommandRunner.cs" />
+    <Compile Include="Common\Collection.cs" />
+    <Compile Include="Common\IRepository.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tester.cs" />
+    <Compile Include="dbLogic\UserContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -5,3 +5,10 @@ G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.csprojResolveAssemblyRefere
 G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.csproj.CoreCompileInputs.cache
 G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.exe
 G:\Repoes\ORMExample\ORMExample\obj\Debug\ORMExample.pdb
+C:\Repos\ORMExample\ORMExample\bin\Debug\ORMExample.exe.config
+C:\Repos\ORMExample\ORMExample\bin\Debug\ORMExample.exe
+C:\Repos\ORMExample\ORMExample\bin\Debug\ORMExample.pdb
+C:\Repos\ORMExample\ORMExample\obj\Debug\ORMExample.csprojResolveAssemblyReference.cache
+C:\Repos\ORMExample\ORMExample\obj\Debug\ORMExample.csproj.CoreCompileInputs.cache
+C:\Repos\ORMExample\ORMExample\obj\Debug\ORMExample.exe
+C:\Repos\ORMExample\ORMExample\obj\Debug\ORMExample.pdb
