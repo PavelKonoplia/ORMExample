@@ -11,6 +11,7 @@ namespace ORMExample
 {
     class Program
     {
+        private static string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         static void Main(string[] args)
         {
             //TestUser();
@@ -19,27 +20,27 @@ namespace ORMExample
 
         public static void TestUser()
         {
+            Repository<User> UsersContext = new Repository<User>(connectionString);
             User user = new User(33, "Mate", 31);
             User user2 = new User(13, "Rom", 22);
-            UserContext userContext = new UserContext();
-            userContext.UsersContext.GetItemsList();
-            userContext.UsersContext.GetItem(112);
-            userContext.UsersContext.Create(user);
-            userContext.UsersContext.Update(user2);
-            userContext.UsersContext.Delete(6);
-            userContext.UsersContext.GetItemsList();
+            UsersContext.GetItemsList();
+            UsersContext.GetItem(112);
+            UsersContext.Create(user);
+            UsersContext.Update(user2);
+            UsersContext.Delete(6);
+            UsersContext.GetItemsList();
         }
         public static void TestProduct()
         {
+            Repository<Product> ProductsContext = new Repository<Product>(connectionString);
             Product prod = new Product(13, "Rom-cola", 224);
             Product prod2 = new Product(13, "Rom", 22);
-            ProductContext userContext = new ProductContext();
-            userContext.ProductsContext.GetItemsList();
-            userContext.ProductsContext.GetItem(12);
-            userContext.ProductsContext.Create(prod);
-            userContext.ProductsContext.Update(prod2);
-            userContext.ProductsContext.Delete(6);
-            userContext.ProductsContext.GetItemsList();
+            ProductsContext.GetItemsList();
+            ProductsContext.GetItem(12);
+            ProductsContext.Create(prod);
+            ProductsContext.Update(prod2);
+            ProductsContext.Delete(6);
+            ProductsContext.GetItemsList();
         }
     }
 }
