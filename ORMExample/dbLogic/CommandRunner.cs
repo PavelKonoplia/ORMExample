@@ -198,12 +198,12 @@ namespace ORMExample
             ShowResult(sqlExpression, $"Deleted item with id = {id}");
         }
 
-        public static object GetPropValue(object src, string propName)
+        private static object GetPropValue(object src, string propName)
         {
             return src.GetType().GetProperty(propName).GetValue(src, null);
         }
 
-        public void ShowResult(string sql,string res)
+        private void ShowResult(string sql,string res)
         {
             Console.WriteLine(sql);
             Console.WriteLine();

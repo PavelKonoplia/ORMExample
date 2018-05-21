@@ -10,7 +10,7 @@ namespace ORMExample.dbLogic
     public class Repository<T> : IRepository<T> where T : class, new()
     {
         private string _connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        public CommandRunner<T> commandRunner;
+        private CommandRunner<T> commandRunner;
 
         public Repository(string connectionString)
         {
