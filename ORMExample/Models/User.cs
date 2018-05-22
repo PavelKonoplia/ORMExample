@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ORMExample.Models
+﻿namespace ORMExample.Models
 {
     public class User
     {
-        public int UserID { get; set; }
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public User()
-        {
-        }
+        public User() { }
 
         public User(int id, string name, int age)
         {
@@ -22,9 +11,15 @@ namespace ORMExample.Models
             Age = age;
         }
 
+        public int UserID { get; set; }
+
+        public string Name { get; set; }
+
+        public int Age { get; set; }
+
         public override string ToString()
         {
-            return "UserID: "+UserID + " Name: " + Name + " Age " + Age;
+            return $"UserID:{UserID} Name: {Name} Age: {Age}";
         }
     }
 }

@@ -44,11 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dbLogic\CommandRunner.cs" />
+    <Compile Include="DbLogic\CommandRunner.cs" />
     <Compile Include="Common\Collection.cs" />
     <Compile Include="Common\IRepository.cs" />
-    <Compile Include="dbLogic\Repository.cs" />
-    <Compile Include="dbLogic\ProductContext.cs" />
+    <Compile Include="DbLogic\Repository.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />

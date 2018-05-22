@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ORMExample.Models
+﻿namespace ORMExample.Models
 {
     public class Product
     {
-        public int ProductID { get; set; }
-        public string Name { get; set; }
-        public int Price { get; set; }
-        public Product()
-        {
-        }
+        public Product() { }
 
         public Product(int id, string name, int price)
         {
@@ -21,6 +10,12 @@ namespace ORMExample.Models
             Name = name;
             Price = price;
         }
+
+        public int ProductID { get; set; }
+
+        public string Name { get; set; }
+
+        public int Price { get; set; }
 
         public override string ToString()
         {

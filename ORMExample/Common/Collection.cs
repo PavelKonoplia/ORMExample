@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ORMExample
 {
@@ -11,20 +8,9 @@ namespace ORMExample
     {
         private List<T> _items;
 
-        public Collection(){
-            _items = new List<T>();
-        }
-
-        public T this[int i]
+        public Collection()
         {
-            get
-            {
-                return _items[i];
-            }
-            set
-            {
-                _items[i] = value;
-            }
+            _items = new List<T>();
         }
 
         public int Count
@@ -35,6 +21,19 @@ namespace ORMExample
         public bool IsReadOnly
         {
             get { return false; }
+        }
+
+        public T this[int i]
+        {
+            get
+            {
+                return _items[i];
+            }
+
+            set
+            {
+                _items[i] = value;
+            }
         }
 
         public void Add(T p)
@@ -74,6 +73,7 @@ namespace ORMExample
                     return true;
                 }
             }
+
             return false;
         }
 

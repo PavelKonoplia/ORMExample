@@ -1,12 +1,8 @@
-﻿using ORMExample.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ORMExample
 {
@@ -41,24 +37,27 @@ namespace ORMExample
                         PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
                         prop.SetValue(instance, ds.Tables[0].Rows[i].ItemArray[j], null);
                     }
+
                     items.Add((T)instance);
                 }
+
                 adapter.Dispose();
                 ds.Dispose();
             }
 
-            Console.WriteLine(sqlExpression+"\n");
+            Console.WriteLine($"{sqlExpression} \n");
             foreach (T item in items)
             {
                 Console.WriteLine(item.ToString());
             }
+
             Console.WriteLine();
             Console.ReadKey();
 
             return items;
         }
 
-        public T GetItem(int Id)
+        public T GetItem(int id)
         {
             string lowerTypeName = typeT.Name.ToLower(), condition = "";
             PropertyInfo[] propsInfo = typeT.GetProperties();
@@ -67,7 +66,7 @@ namespace ORMExample
             {
                 if (propsInfo[i].Name.ToString().ToLower().Contains(lowerTypeName + "id"))
                 {
-                    condition += propsInfo[i].Name + "=" + Id;
+                    condition += propsInfo[i].Name + "=" + id;
                     break;
                 }
             }
@@ -89,16 +88,19 @@ namespace ORMExample
                         PropertyInfo prop = typeT.GetProperty(ds.Tables[0].Columns[j].ToString());
                         prop.SetValue(instance, ds.Tables[0].Rows[0].ItemArray[j], null);
                     }
+
                     item = (T)instance;
                     ShowResult(sqlExpression, item.ToString());
                 }
                 catch (Exception)
                 {
                     Console.WriteLine("Item with this id was not found! \n");                   
-                }              
+                }   
+                
                 adapter.Dispose();
                 ds.Dispose();
             }
+
             return item;
         }
 
@@ -116,6 +118,7 @@ namespace ORMExample
                     : GetPropValue(item, propsInfo[i].Name).ToString();
                 props += i == propsInfo.Length - 1 ? tempProp : tempProp + ",";
             }
+
             string sqlExpression = $"SET IDENTITY_INSERT {tableName} ON \n INSERT INTO {tableName} ({columns}) VALUES ({props}) \n SET IDENTITY_INSERT {tableName} OFF";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -147,6 +150,7 @@ namespace ORMExample
                     condition = propsInfo[i].Name + "=" + GetPropValue(item, propsInfo[i].Name).ToString();
                     continue;
                 }
+
                 tempProp = propsInfo[i].PropertyType.ToString().Contains("String")
                      ? "\'" + GetPropValue(item, propsInfo[i].Name) + "\'"
                      : GetPropValue(item, propsInfo[i].Name).ToString();
@@ -186,6 +190,7 @@ namespace ORMExample
                     break;
                 }
             }
+
             string sqlExpression = $"DELETE FROM {tableName} WHERE {condition}";
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -203,7 +208,7 @@ namespace ORMExample
             return src.GetType().GetProperty(propName).GetValue(src, null);
         }
 
-        private void ShowResult(string sql,string res)
+        private void ShowResult(string sql, string res)
         {
             Console.WriteLine(sql);
             Console.WriteLine();
